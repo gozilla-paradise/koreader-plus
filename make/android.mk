@@ -1,6 +1,10 @@
 # Use the git commit count as the (integer) Android version code
 ANDROID_VERSION ?= $(shell git rev-list --count HEAD)
 ANDROID_NAME ?= $(VERSION)
+# KOReader Plus branding (see platform/android/branding/branding.gradle)
+ANDROID_BRANDING_APP_NAME ?= KOReader Plus
+ANDROID_BRANDING_APP_ID ?= com.gozillaparadise.koreaderplus
+ANDROID_BRANDING_DIR = platform/android/branding
 ANDROID_APK = koreader-android-$(ANDROID_ARCH)$(KODEDUG_SUFFIX)-$(ANDROID_NAME).apk
 
 # Run. {{{
@@ -111,7 +115,10 @@ update-apk: all
 		-PbuildDir='$(abspath $(ANDROID_LAUNCHER_BUILD))' \
 		-PlibsPath='$(abspath $(dir $(ANDROID_LIBS)))' \
 		-PsevenZipLib='$(if $(MONOLIBTIC),koreader-monolibtic,7z)' \
-		-PprojectName='KOReader' \
+		-PprojectName='$(ANDROID_BRANDING_APP_NAME)' \
+		-PbrandingAppId='$(ANDROID_BRANDING_APP_ID)' \
+		-PbrandingResDir='$(abspath $(ANDROID_BRANDING_DIR)/res)' \
+		--init-script='$(abspath $(ANDROID_BRANDING_DIR)/branding.gradle)' \
 		-PversCode='$(ANDROID_VERSION)' \
 		-PversName='$(ANDROID_NAME)' \
 		$(GRADLE_FLAGS) \

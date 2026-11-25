@@ -1,0 +1,25 @@
+// KOReader Plus branding, applied (as a Gradle init script, see make/android.mk)
+// on top of the upstream android-luajit-launcher project, so we don't have to
+// fork it just for this:
+// - brandingAppId: the Android application ID, so we can be installed
+//   alongside the official KOReader app
+// - brandingResDir: resources overriding the launcher's ones (launcher icons).
+//   They are added to the build types source sets, which take precedence
+//   over the main source set when resources are merged.
+// (The app name is set by make/android.mk with -PprojectName.)
+
+allprojects {
+    pluginManager.withPlugin('com.android.application') {
+        def appId = findProperty('brandingAppId')
+        def resDir = findProperty('brandingResDir')
+        extensions.getByName('androidComponents').finalizeDsl { android ->
+            if (appId) {
+                android.defaultConfig.applicationId = appId
+            }
+            if (resDir) {
+                android.sourceSets.getByName('release').res.srcDir(resDir)
+                android.sourceSets.getByName('debug').res.srcDir(resDir)
+            }
+        }
+    }
+}

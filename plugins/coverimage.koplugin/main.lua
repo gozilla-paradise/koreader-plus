@@ -42,8 +42,9 @@ local function isPathAllowed(path)
     elseif not util.pathExists(path:gsub("/$", "")) then -- pathExists expects no trailing slash
         return false
     elseif Device.isAndroid() then
-        return path ~= "/sdcard/koreader/cache/"
-            and ffiutil.realpath(path) ~= ffiutil.realpath(android.getExternalStoragePath() .. "/koreader/cache/")
+        local data_cache_dir = DataStorage:getDataDir() .. "/cache/"
+        return path ~= data_cache_dir
+            and ffiutil.realpath(path) ~= ffiutil.realpath(data_cache_dir)
     else
         return path ~= "./cache/" and ffiutil.realpath(path) ~= ffiutil.realpath("./cache/")
     end

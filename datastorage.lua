@@ -19,7 +19,9 @@ function DataStorage:getDataDir()
     if os.getenv("KO_HOME") then
         data_dir = os.getenv("KO_HOME")
     elseif isAndroid then
-        data_dir = android.getExternalStoragePath() .. "/koreader"
+        -- KOReader Plus: use our own folder, so we can be installed alongside
+        -- the official KOReader app without sharing (and clobbering) settings.
+        data_dir = android.getExternalStoragePath() .. "/koreader-plus"
     elseif os.getenv("UBUNTU_APPLICATION_ISOLATION") then
         local app_id = os.getenv("APP_ID")
         local package_name = app_id:match("^(.-)_")
