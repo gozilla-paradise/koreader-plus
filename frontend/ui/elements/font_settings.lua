@@ -1,3 +1,4 @@
+local DataStorage = require("datastorage")
 local Device = require("device")
 local logger = require("logger")
 local util = require("util")
@@ -17,7 +18,8 @@ local function getDir(isUser)
     if isUser and not home then return end
 
     if Device:isAndroid() then
-        return isUser and home .. "/fonts;" .. home .. "/koreader/fonts"
+        -- (KOReader Plus: our data dir is /sdcard/koreader-plus, see datastorage.lua)
+        return isUser and home .. "/fonts;" .. DataStorage:getDataDir() .. "/fonts"
                        or "/system/fonts"
     elseif Device:isPocketBook() then
         return isUser and "/mnt/ext1/system/fonts"
