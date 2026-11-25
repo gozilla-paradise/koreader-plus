@@ -258,6 +258,20 @@ function ReaderHighlight:init()
         }
     end)
 
+    -- Thai user words (to prevent line breaks inside a word)
+    self:addToHighlightDialog("10_user_thai_words", function(this)
+        return {
+            text = _("Thai word"),
+            show_in_highlight_dialog_func = function()
+                return this.ui.thaiwords and this.ui.thaiwords:isAvailable(this.selected_text.text)
+            end,
+            callback = function()
+                this.ui.thaiwords:showWordDialog(this.selected_text.text)
+                this:onClose()
+            end,
+        }
+    end)
+
     -- Links
     self:addToHighlightDialog("11_follow_link", function(this)
         return {

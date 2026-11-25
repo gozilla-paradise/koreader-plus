@@ -52,6 +52,7 @@ local ReaderRolling = require("apps/reader/modules/readerrolling")
 local ReaderSearch = require("apps/reader/modules/readersearch")
 local ReaderStatus = require("apps/reader/modules/readerstatus")
 local ReaderStyleTweak = require("apps/reader/modules/readerstyletweak")
+local ReaderThaiWords = require("apps/reader/modules/readerthaiwords")
 local ReaderThumbnail = require("apps/reader/modules/readerthumbnail")
 local ReaderToc = require("apps/reader/modules/readertoc")
 local ReaderTypeset = require("apps/reader/modules/readertypeset")
@@ -368,6 +369,12 @@ function ReaderUI:init()
         })
         -- user hyphenation (must be registered before typography)
         self:registerModule("userhyph", ReaderUserHyph:new{
+            dialog = self.dialog,
+            view = self.view,
+            ui = self
+        })
+        -- Thai user words (line breaking)
+        self:registerModule("thaiwords", ReaderThaiWords:new{
             dialog = self.dialog,
             view = self.view,
             ui = self

@@ -117,6 +117,13 @@ function CreDocument:engineInit()
         -- initialize hyph dictionaries
         cre.initHyphDict("./data/hyph/")
 
+        -- Thai is written without spaces between words: crengine needs a word
+        -- list to find where lines can be wrapped (it is only loaded when some
+        -- Thai text is met)
+        if cre.setThaiWordBreakDict then
+            cre.setThaiWordBreakDict("./data/wordbreak/th_words.txt", "./data/wordbreak/th_weak_words.txt")
+        end
+
         -- we need to initialize the CRE font list
         local fonts = FontList:getFontList()
         for k, v in ipairs(fonts) do
@@ -149,9 +156,28 @@ function CreDocument:engineInit()
     return cre
 end
 
+-- Words added by the user to the Thai word list, one per line, in
+-- settings/user-thai-words.txt. Re-read on each document opening, so
+-- edits are picked up without restarting.
+function CreDocument:getThaiUserWordsPath()
+    return DataStorage:getSettingsDir() .. "/user-thai-words.txt"
+end
+
+function CreDocument:loadThaiUserWords()
+    if not cre.setThaiWordBreakUserDict then return end
+    local path = self:getThaiUserWordsPath()
+    if lfs.attributes(path, "mode") == "file" then
+        local nb_words = cre.setThaiWordBreakUserDict(path)
+        logger.dbg("CreDocument: Thai user words loaded:", nb_words)
+    else
+        cre.setThaiWordBreakUserDict("")
+    end
+end
+
 function CreDocument:init()
     self:updateColorRendering()
     self:engineInit()
+    self:loadThaiUserWords()
 
     self.flows = {}
     self.page_in_flow = {}
