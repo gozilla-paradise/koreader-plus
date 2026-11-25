@@ -1367,6 +1367,14 @@ function CreDocument:setWordExpansion(value)
     self._document:setIntProperty("crengine.style.max.added.letter.spacing.percent", value or 0)
 end
 
+function CreDocument:setThaiJustify(value)
+    -- 0: justify by expanding spaces only
+    -- 1: on lines with Thai text, distribute the extra space between
+    --    Thai characters too (like MS Word "Thai Justify")
+    logger.dbg("CreDocument: set Thai justify", value)
+    self._document:setIntProperty("crengine.style.thai.justify", value or 0)
+end
+
 function CreDocument:setCJKWidthScaling(value)
     logger.dbg("CreDocument: set cjk width scaling", value)
     self._document:setIntProperty("crengine.style.cjk.width.scale.percent", value or 100)

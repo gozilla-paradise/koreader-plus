@@ -173,6 +173,7 @@ function ReaderFont:onReadSettings(config)
     self.ui.document:setFontKerning(self.configurable.font_kerning)
     self.ui.document:setWordSpacing(self.configurable.word_spacing)
     self.ui.document:setWordExpansion(self.configurable.word_expansion)
+    self.ui.document:setThaiJustify(self.configurable.thai_justify)
     self.ui.document:setCJKWidthScaling(self.configurable.cjk_width_scaling)
     self.ui.document:setInterlineSpacePercent(self.configurable.line_spacing)
     self.ui.document:setGammaIndex(self.configurable.font_gamma)
@@ -281,6 +282,14 @@ function ReaderFont:onSetWordExpansion(value)
     self.ui.document:setWordExpansion(value)
     self.ui:handleEvent(Event:new("UpdatePos"))
     Notification:notify(T(_("Word expansion set to: %1%."), value))
+    return true
+end
+
+function ReaderFont:onSetThaiJustify(value)
+    self.configurable.thai_justify = value
+    self.ui.document:setThaiJustify(value)
+    self.ui:handleEvent(Event:new("UpdatePos"))
+    Notification:notify(value == 1 and _("Thai justify enabled.") or _("Thai justify disabled."))
     return true
 end
 

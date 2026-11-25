@@ -538,6 +538,17 @@ Note that your selected font size is not affected by this setting.]]),
                 end,
             },
             {   -- ReaderFont
+                name = "thai_justify",
+                name_text = _("Thai Justify"),
+                toggle = {_("off"), _("on")},
+                values = {0, 1},
+                default_value = 0,
+                args = {0, 1},
+                event = "SetThaiJustify",
+                help_text = _([[On justified lines with Thai text, distribute the extra space between Thai characters (like Thai Justify in Microsoft Word), instead of only widening the few spaces between phrases.
+This needs font kerning set to 'best'.]]),
+            },
+            {   -- ReaderFont
                 -- This option is not shown in the bottom menu, but its fine tuning is made
                 -- available via the other_button in Word Expansion's fine tuning widget.
                 -- We still need to define it as an option here for it to be known and
