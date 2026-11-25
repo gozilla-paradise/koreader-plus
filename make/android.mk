@@ -5,7 +5,7 @@ ANDROID_NAME ?= $(VERSION)
 ANDROID_BRANDING_APP_NAME ?= KOReader Plus
 ANDROID_BRANDING_APP_ID ?= com.gozillaparadise.koreaderplus
 ANDROID_BRANDING_DIR = platform/android/branding
-ANDROID_APK = koreader-android-$(ANDROID_ARCH)$(KODEDUG_SUFFIX)-$(ANDROID_NAME).apk
+ANDROID_APK = koreader-plus-android-$(ANDROID_ARCH)$(KODEDUG_SUFFIX)-$(ANDROID_NAME).apk
 
 # Run. {{{
 
