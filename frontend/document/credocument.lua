@@ -1528,6 +1528,12 @@ function CreDocument:isRerenderingDelayed()
     return self._document:isRerenderingDelayed()
 end
 
+function CreDocument:setInitialPartialRendering(enable, min_text_size, xpointer)
+    if self._document.setInitialPartialRendering then
+        self._document:setInitialPartialRendering(enable, min_text_size, xpointer)
+    end
+end
+
 function CreDocument:isBuiltDomStale()
     return self._document:isBuiltDomStale()
 end

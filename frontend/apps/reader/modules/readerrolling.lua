@@ -91,7 +91,8 @@ function ReaderRolling:init()
     table.insert(self.ui.postInitCallback, function()
         self.rendering_hash = self.ui.document:getDocumentRenderingHash(true)
         self.ui.document:_readMetadata()
-        if self.ui.document:hasCacheFile() and not self.ui.document:isCacheFileStale() then
+        if self.ui.document:hasCacheFile() and not self.ui.document:isCacheFileStale()
+                and not self.ui.document:isRerenderingDelayed() then -- (not after an initial partial rendering)
             -- We loaded from a valid cache file: remember its hash. It may allow not
             -- having to do any background rerendering if the user somehow reverted
             -- some setting changes before any background rerendering had completed
@@ -348,12 +349,33 @@ function ReaderRolling:onSaveSettings()
     self.ui.doc_settings:saveSetting("partial_rerendering", self.partial_rerendering)
 end
 
+-- Initial partial rendering: when a full rendering is needed (no valid cache, ie. on the first
+-- opening of a book), crengine can render only the DocFragment containing the last position,
+-- and estimate the heights of the others. They then get rendered when shown, and we're in the
+-- same state as after partial rerenderings: a full rendering will be done in the background,
+-- and the document seamlessly reloaded from the cache it saves.
+-- Only for books with that many chars of text (smaller ones are quick enough to render fully).
+local INITIAL_PARTIAL_RENDERING_MIN_TEXT = 500000
+
+function ReaderRolling:onPreRenderDocument()
+    if self.partial_rerendering then
+        self.ui.document:setInitialPartialRendering(true, INITIAL_PARTIAL_RENDERING_MIN_TEXT, self.xpointer)
+    end
+end
+
 function ReaderRolling:onReaderReady()
     self:setupTouchZones()
     if self.hide_nonlinear_flows then
         self.ui.document:cacheFlows()
     end
     self.setupXpointer()
+    if self.ui.document:isRerenderingDelayed() then
+        -- An initial partial rendering was done: pages, ToC... are estimated until reloaded
+        logger.dbg("initial partial rendering done, will do partial renderings on draw")
+        -- annotation page numbers must be updated after self.ui:reloadDocument()
+        self.ui.doc_settings:makeTrue("annotations_externally_modified")
+        self:handleRenderingDelayed()
+    end
     if self.partial_rerendering then
         UIManager:nextTick(function()
             if self.ui.document then -- (could have disappeared with unit tests)
